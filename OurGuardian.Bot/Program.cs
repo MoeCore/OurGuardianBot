@@ -51,24 +51,12 @@ internal class Program
 
         client.Ready += async () =>
         {
-            if (IsDebug())
-                await commands.RegisterCommandsToGuildAsync(ulong.Parse(config["TestGuild"]), true);
-            else
-                await commands.RegisterCommandsGloballyAsync(true);
+            await commands.RegisterCommandsGloballyAsync(true);
         };
 
         await client.LoginAsync(Discord.TokenType.Bot, config["Tokens:Discord"]);
         await client.StartAsync();
 
         await Task.Delay(-1);
-    }
-
-    private static bool IsDebug()
-    {
-#if DEBUG
-        return true;
-#else
-        return false;
-#endif
     }
 }
