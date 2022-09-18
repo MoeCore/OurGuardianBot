@@ -7,4 +7,16 @@ Discord bot written in C# using Discord.Net for [OUR Community](https://discord.
 ## Setup
 1. Copy `Config.example.yml` as `Config.yml`
 2. Setup your own discord bot token in `Config.yml` file
-3. Run project 
+
+---
+
+### Run in console
+```sh
+dotnet run --project OurGuardian.Bot
+```
+
+### Or in docker
+```sh
+sudo docker build -t moecore/ourguardianbot .
+sudo docker-compose up -d
+```
