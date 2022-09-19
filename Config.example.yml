@@ -1,2 +1,4 @@
 Tokens:
     Discord: discord_bot_token_here
+Guilds:
+    Test: test_guild_id_here
