@@ -58,9 +58,18 @@ internal class Program
 
         client.InteractionCreated += async interaction =>
         {
-            var scope = provider.CreateScope();
-            var context = new SocketInteractionContext(client, interaction);
-            await commands.ExecuteCommandAsync(context, scope.ServiceProvider);
+            try
+            {
+                var context = new SocketInteractionContext(client, interaction);
+                await commands.ExecuteCommandAsync(context, provider);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+
+                if (interaction.Type == Discord.InteractionType.ApplicationCommand)
+                    await interaction.GetOriginalResponseAsync().ContinueWith(async message => await message.Result.DeleteAsync());
+            }
         };
 
         await client.LoginAsync(Discord.TokenType.Bot, config["Tokens:Discord"]);

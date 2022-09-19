@@ -14,7 +14,7 @@ public class BruhParty : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("Bruh", "Change all nicknames to Bruh")]
-    // [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
+    [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
     public async Task Bruh()
     {
         _logger.LogTrace("User {Username}#{UserTag} set bruh party!", Context.User.Username, Context.User.Discriminator);
