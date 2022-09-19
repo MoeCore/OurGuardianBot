@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
@@ -26,12 +25,15 @@ internal class Program
                 {
                     LogLevel = Discord.LogSeverity.Debug,
                     DefaultRunMode = Discord.Commands.RunMode.Async
-                })))
+                }))
+                .AddSingleton<OurGuardian.Bot.Services.Interaction>()
+                .AddSingleton<OurGuardian.Bot.Services.Log>())
                 .UseSerilog((context, services, configuration) => configuration
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(services)
                     .Enrich.FromLogContext()
-                    .WriteTo.Console())
+                    .WriteTo.Console()
+                    .MinimumLevel.Verbose())
                 .Build();
 
         await RunAsync(host);
@@ -42,35 +44,11 @@ internal class Program
         using IServiceScope serviceScope = host.Services.CreateScope();
         IServiceProvider provider = serviceScope.ServiceProvider;
 
-        var commands = provider.GetRequiredService<InteractionService>();
+        await provider.GetRequiredService<OurGuardian.Bot.Services.Log>().Init();
+        await provider.GetRequiredService<OurGuardian.Bot.Services.Interaction>().Init();
+
         var client = provider.GetRequiredService<DiscordSocketClient>();
         var config = provider.GetRequiredService<IConfigurationRoot>();
-
-        client.Ready += async () =>
-        {
-            await commands.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
-#if DEBUG
-            await commands.RegisterCommandsToGuildAsync(ulong.Parse(config["Guilds:Test"]), true);
-#else
-            await commands.RegisterCommandsGloballyAsync(true);
-#endif
-        };
-
-        client.InteractionCreated += async interaction =>
-        {
-            try
-            {
-                var context = new SocketInteractionContext(client, interaction);
-                await commands.ExecuteCommandAsync(context, provider);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-
-                if (interaction.Type == Discord.InteractionType.ApplicationCommand)
-                    await interaction.GetOriginalResponseAsync().ContinueWith(async message => await message.Result.DeleteAsync());
-            }
-        };
 
         await client.LoginAsync(Discord.TokenType.Bot, config["Tokens:Discord"]);
         await client.StartAsync();
