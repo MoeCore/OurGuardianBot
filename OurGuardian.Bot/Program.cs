@@ -1,11 +1,11 @@
-﻿using Discord.Commands;
+﻿using System.Reflection;
+using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Yaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OurGuardian.Bot.Handlers;
 using Serilog;
 
 internal class Program
@@ -22,7 +22,6 @@ internal class Program
                 .AddSingleton(config)
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-                .AddSingleton<InteractionHandler>()
                 .AddSingleton(x => new CommandService(new CommandServiceConfig
                 {
                     LogLevel = Discord.LogSeverity.Debug,
@@ -47,11 +46,21 @@ internal class Program
         var client = provider.GetRequiredService<DiscordSocketClient>();
         var config = provider.GetRequiredService<IConfigurationRoot>();
 
-        await provider.GetRequiredService<InteractionHandler>().InitializeAsync();
-
         client.Ready += async () =>
         {
+            await commands.AddModulesAsync(Assembly.GetEntryAssembly(), provider);
+#if DEBUG
+            await commands.RegisterCommandsToGuildAsync(ulong.Parse(config["Guilds:Test"]), true);
+#else
             await commands.RegisterCommandsGloballyAsync(true);
+#endif
+        };
+
+        client.InteractionCreated += async interaction =>
+        {
+            var scope = provider.CreateScope();
+            var context = new SocketInteractionContext(client, interaction);
+            await commands.ExecuteCommandAsync(context, scope.ServiceProvider);
         };
 
         await client.LoginAsync(Discord.TokenType.Bot, config["Tokens:Discord"]);
