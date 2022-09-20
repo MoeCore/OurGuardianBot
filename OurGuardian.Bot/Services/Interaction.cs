@@ -34,8 +34,21 @@ public class Interaction
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         _client.Ready += OnClientReady;
         _client.InteractionCreated += HandleInteraction;
+
         _interactionService.SlashCommandExecuted += HandleSlashCommand;
+        _interactionService.ContextCommandExecuted += ContextCommandExecuted;
+        _interactionService.ComponentCommandExecuted += ComponentCommandExecuted;
     }
+
+    private Task ComponentCommandExecuted(
+        ComponentCommandInfo componentCommand,
+        IInteractionContext interactionContext,
+        IResult result) => Task.CompletedTask;
+
+    private Task ContextCommandExecuted(
+        ContextCommandInfo contextCommand,
+        IInteractionContext interactionContext,
+        IResult result) => Task.CompletedTask;
 
     private Task HandleSlashCommand(
         SlashCommandInfo slashCommand,
@@ -44,7 +57,6 @@ public class Interaction
 
     private async Task OnClientReady()
     {
-        await Task.Delay(1000);
 #if DEBUG
         await _interactionService.RegisterCommandsToGuildAsync(ulong.Parse(_configuration["Guilds:Test"]), true);
 #else
