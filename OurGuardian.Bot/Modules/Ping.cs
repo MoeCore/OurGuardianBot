@@ -16,6 +16,6 @@ public class Ping : InteractionModuleBase<SocketInteractionContext>
     public async Task Pong()
     {
         _logger.LogTrace("Ping recived from {Username}#{UserId}", Context.User.Username, Context.User.Discriminator);
-        await RespondAsync("Pong");
+        await RespondAsync($"Pong {Context.Client.Latency}ms");
     }
 }
