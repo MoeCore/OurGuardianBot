@@ -8,4 +8,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY Config.yml /app
 COPY --from=build-env /app/out .
-ENTRYPOINT [ "dotnet", "OurGuardian.Bot.dll" ]
+ENTRYPOINT [ "dotnet", "OurGuardian.dll" ]

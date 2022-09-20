@@ -3,7 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OurGuardian.Bot.Services;
+using OurGuardian.Services;
 using Serilog;
 
 internal class Program

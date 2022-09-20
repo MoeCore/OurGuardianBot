@@ -2,7 +2,7 @@ using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 
-namespace OurGuardian.Bot.Modules;
+namespace OurGuardian.Modules;
 
 public class BruhParty : InteractionModuleBase<SocketInteractionContext>
 {

@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace OurGuardian.Bot.Services;
+namespace OurGuardian.Services;
 
 public class InteractionHandler
 {
