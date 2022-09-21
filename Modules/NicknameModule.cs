@@ -4,18 +4,18 @@ using Microsoft.Extensions.Logging;
 
 namespace OurGuardian.Modules;
 
-public class NicknameUpdater : InteractionModuleBase<SocketInteractionContext>
+public class NicknameModule : InteractionModuleBase<SocketInteractionContext>
 {
     public readonly ILogger _logger;
 
-    public NicknameUpdater(ILogger<NicknameUpdater> logger)
+    public NicknameModule(ILogger<NicknameModule> logger)
     {
         _logger = logger;
     }
 
     [SlashCommand("setnicknames", "Change all nicknames to Bruh")]
     [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
-    public async Task SetNicknames(string newName)
+    public async Task SetNicknamesAsync(string newName)
     {
         _logger.LogTrace("User {Username}#{UserTag} set all nicknames to {newName}!", Context.User.Username, Context.User.Discriminator, newName);
 
@@ -33,7 +33,7 @@ public class NicknameUpdater : InteractionModuleBase<SocketInteractionContext>
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"[{nameof(NicknameUpdater)}] Catch exception on {nameof(SetNicknames)}");
+                _logger.LogError(exception, $"[{nameof(NicknameModule)}] Catch exception on {nameof(SetNicknamesAsync)}");
             }
 
             await Task.Delay(100);
@@ -42,7 +42,7 @@ public class NicknameUpdater : InteractionModuleBase<SocketInteractionContext>
 
     [SlashCommand("resetnicknames", "Change all nicknames to Bruh")]
     [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
-    public async Task ResetNicknames()
+    public async Task ResetNicknamesAsync()
     {
         _logger.LogTrace("User {Username}#{UserTag} reset set all nicknames to default!", Context.User.Username, Context.User.Discriminator);
 
@@ -60,7 +60,7 @@ public class NicknameUpdater : InteractionModuleBase<SocketInteractionContext>
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"[{nameof(NicknameUpdater)}] Catch exception on {nameof(ResetNicknames)}");
+                _logger.LogError(exception, $"[{nameof(NicknameModule)}] Catch exception on {nameof(ResetNicknamesAsync)}");
             }
 
             await Task.Delay(100);
