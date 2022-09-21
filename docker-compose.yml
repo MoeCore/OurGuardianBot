@@ -2,3 +2,5 @@ version: "3"
 services:
   bot:
     image: moecore/ourguardianbot:latest
+    volumes:
+      - ./Logs:/app/Logs:rw
