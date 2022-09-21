@@ -13,7 +13,7 @@ public class NicknameModule : InteractionModuleBase<SocketInteractionContext>
         _logger = logger;
     }
 
-    [SlashCommand("setnicknames", "Change all nicknames to Bruh")]
+    [SlashCommand("setnicknames", "Change all nicknames")]
     [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
     public async Task SetNicknamesAsync(string newName)
     {
@@ -40,7 +40,7 @@ public class NicknameModule : InteractionModuleBase<SocketInteractionContext>
         }
     }
 
-    [SlashCommand("resetnicknames", "Change all nicknames to Bruh")]
+    [SlashCommand("resetnicknames", "Reset all nicknames")]
     [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
     public async Task ResetNicknamesAsync()
     {
