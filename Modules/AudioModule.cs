@@ -23,20 +23,20 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 
         if (_lavaNode.HasPlayer(Context.Guild))
         {
-            await ReplyAsync("I'm **already connected** to a voice channel!");
+            await RespondAsync("Already **connected** to voice");
             return;
         }
 
         var voiceState = Context.User as IVoiceState;
         if (voiceState?.VoiceChannel == null)
         {
-            await ReplyAsync("You must be **connected** to a voice channel!");
+            await RespondAsync("You must be **connected** to a voice channel!");
             return;
         }
 
         try
         {
-            await ReplyAsync($"Connected to **{voiceState.VoiceChannel.Name}**!");
+            await RespondAsync($"Connected to **{voiceState.VoiceChannel.Name}**!");
             await _lavaNode.JoinAsync(voiceState.VoiceChannel);
         }
         catch (Exception exception)
@@ -52,20 +52,20 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 
         if (_lavaNode.HasPlayer(Context.Guild) == false)
         {
-            await ReplyAsync("I'm **already disconnected** from voice channel!");
+            await RespondAsync("Already **disconnected** from voice");
             return;
         }
 
         var voiceState = Context.User as IVoiceState;
         if (voiceState?.VoiceChannel == null)
         {
-            await ReplyAsync("You must be **connected** to a voice channel!");
+            await RespondAsync("You must be **connected** to a voice channel!");
             return;
         }
 
         try
         {
-            await ReplyAsync($"Disconnected from **{voiceState.VoiceChannel.Name}**!");
+            await RespondAsync($"Disconnected from **{voiceState.VoiceChannel.Name}**!");
             await _lavaNode.LeaveAsync(voiceState.VoiceChannel);
         }
         catch (Exception exception)
@@ -77,7 +77,11 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("play", "disconnect from voice channel")]
     public async Task PlayAsync(string queryOrLink)
     {
-        await ConnectAsync();
+        if (_lavaNode.HasPlayer(Context.Guild) == false)
+        {
+            await RespondAsync("Connect bot to voice!");
+            return;
+        }
 
         int playlistInUrlIndex = queryOrLink.IndexOf("&list=");
         if (playlistInUrlIndex >= 0)
@@ -93,10 +97,10 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
             case Victoria.Responses.Search.SearchStatus.SearchResult:
                 break;
             case Victoria.Responses.Search.SearchStatus.NoMatches:
-                await ReplyAsync("Nothing found");
+                await RespondAsync("Nothing found");
                 break;
             case Victoria.Responses.Search.SearchStatus.LoadFailed:
-                await ReplyAsync("Load failed. The url could be wrong or maybe LavaLink needs an update.");
+                await RespondAsync("Load failed. The url could be wrong or maybe LavaLink needs an update.");
                 break;
         }
 
@@ -105,7 +109,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            await ReplyAsync($"Playing {audio.Title} by {audio.Author} in **{voiceState.VoiceChannel.Name}**!");
+            await RespondAsync($"Playing **{audio.Title}** by **{audio.Author}** in **{voiceState.VoiceChannel.Name}**!");
             await _lavaNode.GetPlayer(Context.Guild).PlayAsync(audio);
         }
         catch (Exception exception)
