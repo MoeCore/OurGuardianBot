@@ -40,16 +40,51 @@ public class InteractionHandler
 
     private Task LogAsync(LogMessage logMessage)
     {
-        _logger.LogTrace("InteractionService: {message}", logMessage.Message);
+        switch (logMessage.Severity)
+        {
+            case LogSeverity.Critical:
+                _logger.LogCritical("InteractionService: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Error:
+                _logger.LogError("InteractionService: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Warning:
+                _logger.LogWarning("InteractionService: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Info:
+                _logger.LogInformation("InteractionService: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Verbose:
+                _logger.LogTrace("InteractionService: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Debug:
+                _logger.LogDebug("InteractionService: {message}", logMessage.Message);
+                break;
+        }
+
         return Task.CompletedTask;
     }
 
     private async Task ReadyAsync()
     {
-        if (Program.IsDebug())
-            await _handler.RegisterCommandsToGuildAsync(_configuration.GetValue<ulong>("Guilds:Test"), true);
-        else
-            await _handler.RegisterCommandsGloballyAsync(true);
+        try
+        {
+            if (Program.IsDebug())
+            {
+                ulong testGuildId = _configuration.GetValue<ulong>("Guilds:Test");
+                await _handler.RegisterCommandsToGuildAsync(testGuildId, true);
+                _logger.LogInformation("Registering commands to {id}", testGuildId);
+            }
+            else
+            {
+                await _handler.RegisterCommandsGloballyAsync(true);
+                _logger.LogInformation("Registering commands globally");
+            }
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, $"[{nameof(InteractionHandler)}] Catch exception on {nameof(ReadyAsync)}");
+        }
     }
 
     private async Task HandleInteraction(SocketInteraction interaction)

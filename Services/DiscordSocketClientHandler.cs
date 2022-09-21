@@ -31,7 +31,28 @@ public class DiscordSocketClientHandler
 
     private Task LogAsync(LogMessage logMessage)
     {
-        _logger.LogInformation("DiscordSocketClient: {message}", logMessage.Message);
+        switch (logMessage.Severity)
+        {
+            case LogSeverity.Critical:
+                _logger.LogCritical("DiscordSocketClient: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Error:
+                _logger.LogError("DiscordSocketClient: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Warning:
+                _logger.LogWarning("DiscordSocketClient: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Info:
+                _logger.LogInformation("DiscordSocketClient: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Verbose:
+                _logger.LogTrace("DiscordSocketClient: {message}", logMessage.Message);
+                break;
+            case LogSeverity.Debug:
+                _logger.LogDebug("DiscordSocketClient: {message}", logMessage.Message);
+                break;
+        }
+
         return Task.CompletedTask;
     }
 }
