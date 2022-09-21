@@ -26,24 +26,30 @@ internal class Program
             AlwaysDownloadUsers = true,
         };
 
+        var lavaConfig = new LavaConfig
+        {
+            // Hostname = "lavalink",
+            Port = _configuration.GetValue<ushort>("Ports:Lavalink"),
+        };
+
         _services = new ServiceCollection()
-            .AddSingleton(_configuration)
-            .AddLogging(builder => builder.AddSerilog(dispose: true))
-            .AddSingleton(_socketConfig)
-            .AddSingleton<DiscordSocketClient>()
-            .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-            .AddSingleton<LavaNode>()
-            .AddSingleton<LavaConfig>()
-            .AddSingleton<DiscordSocketClientHandler>()
-            .AddSingleton<AudioHandler>()
-            .AddSingleton<InteractionHandler>()
-            .BuildServiceProvider();
+                .AddSingleton(_configuration)
+                .AddLogging(builder => builder.AddSerilog(dispose: true))
+                .AddSingleton(_socketConfig)
+                .AddSingleton<DiscordSocketClient>()
+                .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+                .AddSingleton<LavaNode>()
+                .AddSingleton(lavaConfig)
+                .AddSingleton<DiscordSocketClientHandler>()
+                .AddSingleton<AudioHandler>()
+                .AddSingleton<InteractionHandler>()
+                .BuildServiceProvider();
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .WriteTo.File($"Logs/{DateTime.Now:yyyy-MM-dd}/{DateTime.Now:HH-mm-ss}.txt")
-            .WriteTo.Console()
-            .CreateLogger();
+                .MinimumLevel.Verbose()
+                .WriteTo.File($"Logs/{DateTime.Now:yyyy-MM-dd}/{DateTime.Now:HH-mm-ss}.txt")
+                .WriteTo.Console()
+                .CreateLogger();
     }
 
     private static void Main()
