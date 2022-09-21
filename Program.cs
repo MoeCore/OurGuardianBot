@@ -27,12 +27,12 @@ internal class Program
 
         _services = new ServiceCollection()
             .AddSingleton(_configuration)
+            .AddLogging(builder => builder.AddSerilog(dispose: true))
             .AddSingleton(_socketConfig)
             .AddSingleton<DiscordSocketClient>()
             .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
-            .AddSingleton<InteractionHandler>()
             .AddSingleton<DiscordSocketClientHandler>()
-            .AddLogging(builder => builder.AddSerilog(dispose: true))
+            .AddSingleton<InteractionHandler>()
             .BuildServiceProvider();
 
         Log.Logger = new LoggerConfiguration()
@@ -47,8 +47,8 @@ internal class Program
 
     private async Task RunAsync()
     {
-        await _services.GetRequiredService<InteractionHandler>().InitializeAsync();
         await _services.GetRequiredService<DiscordSocketClientHandler>().InitializeAsync();
+        await _services.GetRequiredService<InteractionHandler>().InitializeAsync();
         await Task.Delay(Timeout.Infinite);
     }
 
