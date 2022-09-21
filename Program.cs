@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OurGuardian.Services;
 using Serilog;
+using Victoria;
 
 internal class Program
 {
@@ -31,7 +32,10 @@ internal class Program
             .AddSingleton(_socketConfig)
             .AddSingleton<DiscordSocketClient>()
             .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+            .AddSingleton<LavaNode>()
+            .AddSingleton<LavaConfig>()
             .AddSingleton<DiscordSocketClientHandler>()
+            .AddSingleton<AudioHandler>()
             .AddSingleton<InteractionHandler>()
             .BuildServiceProvider();
 
@@ -48,6 +52,7 @@ internal class Program
     private async Task RunAsync()
     {
         await _services.GetRequiredService<DiscordSocketClientHandler>().InitializeAsync();
+        await _services.GetRequiredService<AudioHandler>().InitializeAsync();
         await _services.GetRequiredService<InteractionHandler>().InitializeAsync();
         await Task.Delay(Timeout.Infinite);
     }
