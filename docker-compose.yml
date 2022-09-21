@@ -1,12 +1,27 @@
 version: "3"
+
 services:
   lavalink:
     image: fredboat/lavalink:latest
-    ports:
-      - 2333:2333
+    container_name: Lavalink
+    hostname: lavalink
+    restart: unless-stopped
+    networks:
+      - lavalink-net
     volumes:
       - ./Logs:/opt/Lavalink/logs:rw
+      - ./Lavalink.yml:/opt/Lavalink/application.yml:ro
   bot:
     image: moecore/ourguardianbot:latest
+    container_name: OurGuardianBot
+    restart: unless-stopped
+    networks:
+      - lavalink-net
+    depends_on:
+      - lavalink
     volumes:
       - ./Logs:/app/Logs:rw
+      - ./appsettings.json:/app/appsettings.json:ro
+
+networks:
+  lavalink-net:
