@@ -37,7 +37,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
         try
         {
             await ReplyAsync($"Connected to **{voiceState.VoiceChannel.Name}**!");
-            await _lavaNode.JoinAsync(voiceState.VoiceChannel, Context.Channel as ITextChannel);
+            await _lavaNode.JoinAsync(voiceState.VoiceChannel);
         }
         catch (Exception exception)
         {
