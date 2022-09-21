@@ -105,7 +105,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
 
         try
         {
-            await ReplyAsync($"Playing SONG_NAME in **{voiceState.VoiceChannel.Name}**!");
+            await ReplyAsync($"Playing {audio.Title} by {audio.Author} in **{voiceState.VoiceChannel.Name}**!");
             await _lavaNode.GetPlayer(Context.Guild).PlayAsync(audio);
         }
         catch (Exception exception)
