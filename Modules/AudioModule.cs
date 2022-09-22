@@ -74,7 +74,7 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
         }
     }
 
-    [SlashCommand("play", "disconnect from voice channel")]
+    [SlashCommand("play", "play music from youtube link or query")]
     public async Task PlayAsync(string queryOrLink)
     {
         if (_lavaNode.HasPlayer(Context.Guild) == false)
