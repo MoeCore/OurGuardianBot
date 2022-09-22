@@ -49,7 +49,7 @@ public class InteractionHandler
                 _logger.LogCritical("InteractionService: {message}", logMessage.Message);
                 break;
             case LogSeverity.Error:
-                _logger.LogError("InteractionService: {message}", logMessage.Message);
+                _logger.LogError("InteractionService: {message}", logMessage.Exception);
                 break;
             case LogSeverity.Warning:
                 _logger.LogWarning("InteractionService: {message}", logMessage.Message);
@@ -75,12 +75,12 @@ public class InteractionHandler
             if (_debugChecker.IsDebug)
             {
                 ulong testGuildId = _configuration.GetValue<ulong>("Guilds:Test");
-                await _handler.RegisterCommandsToGuildAsync(testGuildId, deleteMissing: true);
+                await _handler.RegisterCommandsToGuildAsync(testGuildId);
                 _logger.LogInformation("Registering commands to {id}", testGuildId);
             }
             else
             {
-                await _handler.RegisterCommandsGloballyAsync(deleteMissing: true);
+                await _handler.RegisterCommandsGloballyAsync();
                 _logger.LogInformation("Registering commands globally");
             }
         }
