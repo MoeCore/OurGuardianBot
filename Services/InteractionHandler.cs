@@ -14,19 +14,22 @@ public class InteractionHandler
     private readonly IServiceProvider _services;
     private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
+    private readonly DebugChecker _debugChecker;
 
     public InteractionHandler(
         DiscordSocketClient client,
         InteractionService handler,
         IServiceProvider services,
         IConfiguration config,
-        ILogger<InteractionHandler> logger)
+        ILogger<InteractionHandler> logger,
+        DebugChecker debugChecker)
     {
         _client = client;
         _handler = handler;
         _services = services;
         _configuration = config;
         _logger = logger;
+        _debugChecker = debugChecker;
     }
 
     public async Task InitializeAsync()
@@ -69,7 +72,7 @@ public class InteractionHandler
     {
         try
         {
-            if (Program.IsDebug())
+            if (_debugChecker.IsDebug)
             {
                 ulong testGuildId = _configuration.GetValue<ulong>("Guilds:Test");
                 await _handler.RegisterCommandsToGuildAsync(testGuildId, deleteMissing: true);
