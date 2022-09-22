@@ -72,12 +72,12 @@ public class InteractionHandler
             if (Program.IsDebug())
             {
                 ulong testGuildId = _configuration.GetValue<ulong>("Guilds:Test");
-                await _handler.RegisterCommandsToGuildAsync(testGuildId, true);
+                await _handler.RegisterCommandsToGuildAsync(testGuildId, deleteMissing: true);
                 _logger.LogInformation("Registering commands to {id}", testGuildId);
             }
             else
             {
-                await _handler.RegisterCommandsGloballyAsync(true);
+                await _handler.RegisterCommandsGloballyAsync(deleteMissing: true);
                 _logger.LogInformation("Registering commands globally");
             }
         }
