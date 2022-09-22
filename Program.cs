@@ -22,20 +22,21 @@ internal class Program
 
         _socketConfig = new DiscordSocketConfig()
         {
-            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.GuildMembers,
+            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMembers | GatewayIntents.GuildVoiceStates,
             AlwaysDownloadUsers = true,
         };
 
         var lavaConfig = new LavaConfig
         {
             // Hostname = "lavalink",
-            Port = _configuration.GetValue<ushort>("Ports:Lavalink"),
+            Port = _configuration.GetValue<ushort>("ports:lavalink"),
         };
 
         _services = new ServiceCollection()
                 .AddSingleton(_configuration)
                 .AddLogging(builder => builder.AddSerilog(dispose: true))
                 .AddSingleton(_socketConfig)
+                .AddSingleton<DebugChecker>()
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton<LavaNode>()
@@ -61,14 +62,5 @@ internal class Program
         await _services.GetRequiredService<AudioHandler>().InitializeAsync();
         await _services.GetRequiredService<InteractionHandler>().InitializeAsync();
         await Task.Delay(Timeout.Infinite);
-    }
-
-    public static bool IsDebug()
-    {
-#if DEBUG
-        return true;
-#else
-        return false;
-#endif
     }
 }
