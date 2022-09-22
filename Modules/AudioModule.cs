@@ -16,31 +16,28 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
         _lavaNode = lavaNode;
     }
 
+    public IVoiceChannel GetPlayerVoiceChannel => _lavaNode.GetPlayer(Context.Guild).VoiceChannel;
+
     [SlashCommand("connect", "connect to voice channel")]
     public async Task ConnectAsync()
     {
-        _logger.LogTrace("{Username}#{UserId} used connect command", Context.User.Username, Context.User.Discriminator);
+        var voiceState = await GetVoiceStateOrSayConnectAsync();
+        if (voiceState == null || voiceState.VoiceChannel == null) return;
 
         if (_lavaNode.HasPlayer(Context.Guild))
         {
-            await RespondAsync("Already **connected** to voice");
-            return;
-        }
-
-        var voiceState = Context.User as IVoiceState;
-        if (voiceState?.VoiceChannel == null)
-        {
-            await RespondAsync("You must be **connected** to a voice channel!");
+            await RespondAsync(":exclamation: Already connected to voice.");
             return;
         }
 
         try
         {
-            await RespondAsync($"Connected to **{voiceState.VoiceChannel.Name}**!");
             await _lavaNode.JoinAsync(voiceState.VoiceChannel);
+            await RespondAsync($":notes: Connected to {voiceState.VoiceChannel.Name}");
         }
         catch (Exception exception)
         {
+            await RespondAsync($":exclamation: Oops can't connect to voice channel :confused:");
             _logger.LogError(exception, $"[{nameof(AudioModule)}] Catch exception on {nameof(ConnectAsync)}");
         }
     }
@@ -48,73 +45,39 @@ public class AudioModule : InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("disconnect", "disconnect from voice channel")]
     public async Task DisconnectAsync()
     {
-        _logger.LogTrace("{Username}#{UserId} used disconnect command", Context.User.Username, Context.User.Discriminator);
+        var voiceState = await GetVoiceStateOrSayConnectAsync();
+        if (voiceState == null || voiceState.VoiceChannel == null) return;
 
         if (_lavaNode.HasPlayer(Context.Guild) == false)
         {
-            await RespondAsync("Already **disconnected** from voice");
+            await RespondAsync(":exclamation: Already disconnected from voice.");
             return;
         }
 
-        var voiceState = Context.User as IVoiceState;
-        if (voiceState?.VoiceChannel == null)
+        if (GetPlayerVoiceChannel != voiceState.VoiceChannel)
         {
-            await RespondAsync("You must be **connected** to a voice channel!");
+            await RespondAsync($":exclamation: You need to connect to {GetPlayerVoiceChannel.Name}");
             return;
         }
 
         try
         {
-            await RespondAsync($"Disconnected from **{voiceState.VoiceChannel.Name}**!");
             await _lavaNode.LeaveAsync(voiceState.VoiceChannel);
+            await RespondAsync($":notes: Disconnected from {voiceState.VoiceChannel.Name}");
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, $"[{nameof(AudioModule)}] Catch exception on {nameof(DisconnectAsync)}");
+            await RespondAsync($":exclamation: Oops can't disconnect from voice channel :confused:");
+            _logger.LogError(exception, $"[{nameof(AudioModule)}] Catch exception on {nameof(ConnectAsync)}");
         }
     }
 
-    [SlashCommand("play", "play music from youtube link or query")]
-    public async Task PlayAsync(string queryOrLink)
+    public async Task<IVoiceState?> GetVoiceStateOrSayConnectAsync()
     {
-        if (_lavaNode.HasPlayer(Context.Guild) == false)
-        {
-            await RespondAsync("Connect bot to voice!");
-            return;
-        }
+        var voiceState = Context.User as IVoiceState;
+        if (voiceState == null || voiceState.VoiceChannel == null)
+            await RespondAsync(":exclamation: You must be connected to a voice channel.");
 
-        int playlistInUrlIndex = queryOrLink.IndexOf("&list=");
-        if (playlistInUrlIndex >= 0)
-            queryOrLink = queryOrLink[..playlistInUrlIndex];
-
-        var search = await _lavaNode.SearchYouTubeAsync(queryOrLink);
-        switch (search.Status)
-        {
-            case Victoria.Responses.Search.SearchStatus.TrackLoaded:
-                break;
-            case Victoria.Responses.Search.SearchStatus.PlaylistLoaded:
-                break;
-            case Victoria.Responses.Search.SearchStatus.SearchResult:
-                break;
-            case Victoria.Responses.Search.SearchStatus.NoMatches:
-                await RespondAsync("Nothing found");
-                break;
-            case Victoria.Responses.Search.SearchStatus.LoadFailed:
-                await RespondAsync("Load failed. The url could be wrong or maybe LavaLink needs an update.");
-                break;
-        }
-
-        var voiceState = (Context.User as IVoiceState)!;
-        var audio = search.Tracks.First();
-
-        try
-        {
-            await RespondAsync($"Playing **{audio.Title}** by **{audio.Author}** in **{voiceState.VoiceChannel.Name}**!");
-            await _lavaNode.GetPlayer(Context.Guild).PlayAsync(audio);
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError(exception, $"[{nameof(AudioModule)}] Catch exception on {nameof(PlayAsync)}");
-        }
+        return voiceState;
     }
 }
