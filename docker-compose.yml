@@ -12,7 +12,7 @@ services:
       - ./Logs:/opt/Lavalink/logs:rw
       - ./Lavalink.yml:/opt/Lavalink/application.yml:ro
   bot:
-    image: moecore/ourguardianbot:latest
+    build: .
     container_name: OurGuardianBot
     restart: unless-stopped
     networks:
