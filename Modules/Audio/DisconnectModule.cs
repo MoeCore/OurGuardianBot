@@ -14,7 +14,7 @@ public class DisconnectModule : AudioModuleBase
         var voiceState = await GetVoiceStateOrSayConnectAsync();
         if (voiceState == null || voiceState.VoiceChannel == null) return;
 
-        if (LavaNode.HasPlayer(Context.Guild) == false)
+        if (HasPlayer == false)
         {
             await RespondAsync(":exclamation: Already disconnected from voice.");
             return;
