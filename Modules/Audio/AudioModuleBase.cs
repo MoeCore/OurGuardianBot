@@ -16,7 +16,8 @@ public class AudioModuleBase : InteractionModuleBase<SocketInteractionContext>
         LavaNode = lavaNode;
     }
 
-    protected IVoiceChannel GetPlayerVoiceChannel => LavaNode.GetPlayer(Context.Guild).VoiceChannel;
+    protected IVoiceChannel PlayerVoiceChannel => LavaNode.GetPlayer(Context.Guild).VoiceChannel;
+    protected bool HasPlayer => LavaNode.HasPlayer(Context.Guild);
 
     protected async Task<IVoiceState?> GetVoiceStateOrSayConnectAsync()
     {

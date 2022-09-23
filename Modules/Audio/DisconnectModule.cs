@@ -20,9 +20,9 @@ public class DisconnectModule : AudioModuleBase
             return;
         }
 
-        if (GetPlayerVoiceChannel != voiceState.VoiceChannel)
+        if (PlayerVoiceChannel != voiceState.VoiceChannel)
         {
-            await RespondAsync($":exclamation: You need to connect to {GetPlayerVoiceChannel.Name}");
+            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}");
             return;
         }
 

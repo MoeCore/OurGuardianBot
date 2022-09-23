@@ -14,7 +14,7 @@ public class ConnectModule : AudioModuleBase
         var voiceState = await GetVoiceStateOrSayConnectAsync();
         if (voiceState == null || voiceState.VoiceChannel == null) return;
 
-        if (LavaNode.HasPlayer(Context.Guild))
+        if (HasPlayer)
         {
             await RespondAsync(":exclamation: Already connected to voice.");
             return;
