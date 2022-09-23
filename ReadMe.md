@@ -12,11 +12,10 @@ Discord bot written in C# using Discord.Net for [OUR Community](https://discord.
 
 ### Run in console
 ```sh
-dotnet run --project OurGuardian.Bot
+dotnet run
 ```
 
 ### Or in docker
 ```sh
-sudo docker build -t moecore/ourguardianbot .
-sudo docker-compose up -d
+sudo docker-compose up -d --build
 ```
