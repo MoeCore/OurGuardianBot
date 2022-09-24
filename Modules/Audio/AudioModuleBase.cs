@@ -6,11 +6,11 @@ namespace OurGuardian.Modules.Audio;
 
 public class AudioModuleBase : InteractionModuleBase<SocketInteractionContext>
 {
-    protected readonly LavaNode LavaNode;
 
     protected AudioModuleBase(LavaNode lavaNode) => LavaNode = lavaNode;
     protected IVoiceChannel PlayerVoiceChannel => LavaNode.GetPlayer(Context.Guild).VoiceChannel;
     protected bool HasPlayer => LavaNode.HasPlayer(Context.Guild);
+    protected LavaNode LavaNode { get; }
 
     protected async Task<IVoiceState?> GetVoiceStateOrSayConnectAsync()
     {
