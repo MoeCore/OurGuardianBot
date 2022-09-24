@@ -35,11 +35,11 @@ public class PlayModule : AudioModuleBase
 
         for (int i = 0; i < searchResult.Length; i++)
         {
-            string displayNumber = (i + 1).ToString();
             var currentItem = searchResult[i];
+            var displayTitle = $"{i + 1}. {currentItem.Author}";
 
-            embedBuilder.AddField(currentItem.Author, currentItem.Title);
-            componentBuilder.WithButton(displayNumber, nameof(PlayModuleInteraction.PlayComponentResponseAsync) + currentItem.Url);
+            embedBuilder.AddField(displayTitle, currentItem.Title);
+            componentBuilder.WithButton(displayTitle, nameof(PlayModuleInteraction.PlayComponentResponseAsync) + currentItem.Url);
         }
 
         await RespondAsync(embed: embedBuilder.Build(), components: componentBuilder.Build());
