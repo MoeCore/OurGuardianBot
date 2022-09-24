@@ -3,7 +3,8 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace OurGuardian.Services;
 
@@ -13,7 +14,6 @@ public class InteractionHandler
     private readonly InteractionService _handler;
     private readonly IServiceProvider _services;
     private readonly IConfiguration _configuration;
-    private readonly ILogger _logger;
     private readonly DebugChecker _debugChecker;
 
     public InteractionHandler(
@@ -21,14 +21,12 @@ public class InteractionHandler
         InteractionService handler,
         IServiceProvider services,
         IConfiguration config,
-        ILogger<InteractionHandler> logger,
         DebugChecker debugChecker)
     {
         _client = client;
         _handler = handler;
         _services = services;
         _configuration = config;
-        _logger = logger;
         _debugChecker = debugChecker;
     }
 
@@ -41,31 +39,21 @@ public class InteractionHandler
         _client.InteractionCreated += HandleInteraction;
     }
 
-    private Task LogAsync(LogMessage logMessage)
+    private static async Task LogAsync(LogMessage message)
     {
-        switch (logMessage.Severity)
+        var severity = message.Severity switch
         {
-            case LogSeverity.Critical:
-                _logger.LogCritical("InteractionService: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Error:
-                _logger.LogError("InteractionService: {message}", logMessage.Exception);
-                break;
-            case LogSeverity.Warning:
-                _logger.LogWarning("InteractionService: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Info:
-                _logger.LogInformation("InteractionService: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Verbose:
-                _logger.LogTrace("InteractionService: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Debug:
-                _logger.LogDebug("InteractionService: {message}", logMessage.Message);
-                break;
-        }
+            LogSeverity.Critical => LogEventLevel.Fatal,
+            LogSeverity.Error => LogEventLevel.Error,
+            LogSeverity.Warning => LogEventLevel.Warning,
+            LogSeverity.Info => LogEventLevel.Information,
+            LogSeverity.Verbose => LogEventLevel.Verbose,
+            LogSeverity.Debug => LogEventLevel.Debug,
+            _ => LogEventLevel.Information
+        };
 
-        return Task.CompletedTask;
+        Log.Write(severity, message.Exception, "[{Source}] {Message}", message.Source, message.Message);
+        await Task.CompletedTask;
     }
 
     private async Task ReadyAsync()
@@ -76,17 +64,17 @@ public class InteractionHandler
             {
                 ulong testGuildId = _configuration.GetValue<ulong>("Guilds:Test");
                 await _handler.RegisterCommandsToGuildAsync(testGuildId);
-                _logger.LogInformation("Registering commands to {id}", testGuildId);
+                Log.Information("Registering commands to {id}", testGuildId);
             }
             else
             {
                 await _handler.RegisterCommandsGloballyAsync();
-                _logger.LogInformation("Registering commands globally");
+                Log.Information("Registering commands globally");
             }
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, $"[{nameof(InteractionHandler)}] Catch exception on {nameof(ReadyAsync)}");
+            Log.Information(exception, $"[{nameof(InteractionHandler)}] Catch exception on {nameof(ReadyAsync)}");
         }
     }
 

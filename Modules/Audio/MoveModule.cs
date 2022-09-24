@@ -1,12 +1,12 @@
 using Discord.Interactions;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Victoria;
 
 namespace OurGuardian.Modules.Audio;
 
 public class MoveModule : AudioModuleBase
 {
-    protected MoveModule(ILogger<MoveModule> logger, LavaNode lavaNode) : base(logger, lavaNode) { }
+    protected MoveModule(LavaNode lavaNode) : base(lavaNode) { }
 
     [SlashCommand("move", "Move bot to current voice channel")]
     [DefaultMemberPermissions(Discord.GuildPermission.MoveMembers)]
@@ -35,7 +35,7 @@ public class MoveModule : AudioModuleBase
         catch (Exception exception)
         {
             await RespondAsync($":exclamation: Oops can't disconnect from voice channel :confused:");
-            Logger.LogError(exception, $"[{nameof(MoveModule)}] Catch exception on {nameof(MoveAsync)}");
+            Log.Error("[{Source}] {Message}", nameof(MoveModule), exception.Message);
         }
     }
 }

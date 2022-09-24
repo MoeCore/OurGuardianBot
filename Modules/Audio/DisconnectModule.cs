@@ -1,12 +1,12 @@
 using Discord.Interactions;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Victoria;
 
 namespace OurGuardian.Modules.Audio;
 
 public class DisconnectModule : AudioModuleBase
 {
-    protected DisconnectModule(ILogger<DisconnectModule> logger, LavaNode lavaNode) : base(logger, lavaNode) { }
+    protected DisconnectModule(LavaNode lavaNode) : base(lavaNode) { }
 
     [SlashCommand("disconnect", "disconnect from voice channel")]
     public async Task DisconnectAsync()
@@ -34,7 +34,7 @@ public class DisconnectModule : AudioModuleBase
         catch (Exception exception)
         {
             await RespondAsync($":exclamation: Oops can't disconnect from voice channel :confused:");
-            Logger.LogError(exception, $"[{nameof(DisconnectModule)}] Catch exception on {nameof(DisconnectAsync)}");
+            Log.Error("[{Source}] {Message}", nameof(DisconnectModule), exception.Message);
         }
     }
 }

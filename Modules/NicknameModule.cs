@@ -1,15 +1,11 @@
 using Discord;
 using Discord.Interactions;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace OurGuardian.Modules;
 
 public class NicknameModule : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly ILogger _logger;
-
-    public NicknameModule(ILogger<NicknameModule> logger) => _logger = logger;
-
     [SlashCommand("setnicknames", "Change all nicknames")]
     [DefaultMemberPermissions(GuildPermission.ManageNicknames)]
     public async Task SetNicknamesAsync(string newName)
@@ -41,7 +37,7 @@ public class NicknameModule : InteractionModuleBase<SocketInteractionContext>
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, $"[{nameof(NicknameModule)}] Catch exception on {nameof(ApplyNickNamesAsync)}");
+                Log.Error("[{Source}] {Message}", nameof(NicknameModule), exception.Message);
             }
         }
     }

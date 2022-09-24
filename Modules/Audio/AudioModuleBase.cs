@@ -1,6 +1,5 @@
 using Discord;
 using Discord.Interactions;
-using Microsoft.Extensions.Logging;
 using Victoria;
 
 namespace OurGuardian.Modules.Audio;
@@ -8,14 +7,8 @@ namespace OurGuardian.Modules.Audio;
 public class AudioModuleBase : InteractionModuleBase<SocketInteractionContext>
 {
     protected readonly LavaNode LavaNode;
-    protected readonly ILogger Logger;
 
-    protected AudioModuleBase(ILogger<AudioModuleBase> logger, LavaNode lavaNode)
-    {
-        Logger = logger;
-        LavaNode = lavaNode;
-    }
-
+    protected AudioModuleBase(LavaNode lavaNode) => LavaNode = lavaNode;
     protected IVoiceChannel PlayerVoiceChannel => LavaNode.GetPlayer(Context.Guild).VoiceChannel;
     protected bool HasPlayer => LavaNode.HasPlayer(Context.Guild);
 

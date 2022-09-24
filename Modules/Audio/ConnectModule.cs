@@ -1,12 +1,12 @@
 using Discord.Interactions;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Victoria;
 
 namespace OurGuardian.Modules.Audio;
 
 public class ConnectModule : AudioModuleBase
 {
-    protected ConnectModule(ILogger<ConnectModule> logger, LavaNode lavaNode) : base(logger, lavaNode) { }
+    protected ConnectModule(LavaNode lavaNode) : base(lavaNode) { }
 
     [SlashCommand("connect", "connect to voice channel")]
     public async Task ConnectAsync()
@@ -28,7 +28,7 @@ public class ConnectModule : AudioModuleBase
         catch (Exception exception)
         {
             await RespondAsync($":exclamation: Oops can't connect to voice channel :confused:");
-            Logger.LogError(exception, $"[{nameof(ConnectModule)}] Catch exception on {nameof(ConnectAsync)}");
+            Log.Error("[{Source}] {Message}", nameof(ConnectModule), exception.Message);
         }
     }
 }

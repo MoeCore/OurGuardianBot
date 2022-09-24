@@ -1,12 +1,12 @@
 using Discord.Interactions;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using Victoria;
 
 namespace OurGuardian.Modules.Audio;
 
 public class PlayModule : AudioModuleBase
 {
-    protected PlayModule(ILogger<PlayModule> logger, LavaNode lavaNode) : base(logger, lavaNode) { }
+    protected PlayModule(LavaNode lavaNode) : base(lavaNode) { }
 
     [SlashCommand("play", "play audio from youtube")]
     public async Task PlayAsync(string queryOrLink)

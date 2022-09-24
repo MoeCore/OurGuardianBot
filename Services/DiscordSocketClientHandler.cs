@@ -1,7 +1,8 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace OurGuardian.Services;
 
@@ -9,16 +10,13 @@ public class DiscordSocketClientHandler
 {
     private readonly DiscordSocketClient _client;
     private readonly IConfiguration _configuration;
-    private readonly ILogger _logger;
 
     public DiscordSocketClientHandler(
         DiscordSocketClient client,
-        IConfiguration configuration,
-        ILogger<DiscordSocketClientHandler> logger)
+        IConfiguration configuration)
     {
         _client = client;
         _configuration = configuration;
-        _logger = logger;
     }
 
     public async Task InitializeAsync()
@@ -29,30 +27,20 @@ public class DiscordSocketClientHandler
         await _client.StartAsync();
     }
 
-    private Task LogAsync(LogMessage logMessage)
+    private static async Task LogAsync(LogMessage message)
     {
-        switch (logMessage.Severity)
+        var severity = message.Severity switch
         {
-            case LogSeverity.Critical:
-                _logger.LogCritical("DiscordSocketClient: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Error:
-                _logger.LogError("DiscordSocketClient: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Warning:
-                _logger.LogWarning("DiscordSocketClient: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Info:
-                _logger.LogInformation("DiscordSocketClient: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Verbose:
-                _logger.LogTrace("DiscordSocketClient: {message}", logMessage.Message);
-                break;
-            case LogSeverity.Debug:
-                _logger.LogDebug("DiscordSocketClient: {message}", logMessage.Message);
-                break;
-        }
+            LogSeverity.Critical => LogEventLevel.Fatal,
+            LogSeverity.Error => LogEventLevel.Error,
+            LogSeverity.Warning => LogEventLevel.Warning,
+            LogSeverity.Info => LogEventLevel.Information,
+            LogSeverity.Verbose => LogEventLevel.Verbose,
+            LogSeverity.Debug => LogEventLevel.Debug,
+            _ => LogEventLevel.Information
+        };
 
-        return Task.CompletedTask;
+        Log.Write(severity, message.Exception, "[{Source}] {Message}", message.Source, message.Message);
+        await Task.CompletedTask;
     }
 }
