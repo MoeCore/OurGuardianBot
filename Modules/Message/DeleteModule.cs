@@ -1,9 +1,9 @@
 using Discord;
 using Discord.Interactions;
 
-namespace OurGuardian.Modules;
+namespace OurGuardian.Modules.Message;
 
-public class MessageModule : InteractionModuleBase<SocketInteractionContext>
+public class DeleteModule : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("bulkdelete", "Remove messages")]
     [DefaultMemberPermissions(GuildPermission.ManageMessages)]
