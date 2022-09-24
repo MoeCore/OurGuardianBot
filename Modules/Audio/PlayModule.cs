@@ -30,7 +30,7 @@ public class PlayModule : AudioModuleBase
         var componentBuilder = new ComponentBuilder();
         var embedBuilder = new EmbedBuilder()
             .WithColor(new Color(255, 0, 0))
-            .WithTitle("Youtube search results:")
+            .WithTitle($"Youtube search results: {queryOrLink}")
             .WithThumbnailUrl(await searchResult.First().FetchArtworkAsync());
 
         for (int i = 0; i < searchResult.Length; i++)
