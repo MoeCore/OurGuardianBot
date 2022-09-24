@@ -26,7 +26,7 @@ public class PauseModule : AudioModuleBase
             return;
         }
 
-        if (LavaNode.GetPlayer(Context.Guild).Track.Duration <= TimeSpan.Zero)
+        if (LavaNode.GetPlayer(Context.Guild).Track == null)
         {
             await RespondAsync($":exclamation: Can't pause silence");
             return;
