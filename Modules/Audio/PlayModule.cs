@@ -1,5 +1,6 @@
+using Discord;
 using Discord.Interactions;
-using Serilog;
+using OurGuardian.Modules.Audio.Interactions;
 using Victoria;
 
 namespace OurGuardian.Modules.Audio;
@@ -11,23 +12,36 @@ public class PlayModule : AudioModuleBase
     [SlashCommand("play", "play audio from youtube")]
     public async Task PlayAsync(string queryOrLink)
     {
-        var voiceState = await GetVoiceStateOrSayConnectAsync();
-        if (voiceState == null || voiceState.VoiceChannel == null) return;
+        var search = await LavaNode.SearchYouTubeAsync(queryOrLink);
 
-        if (!HasPlayer)
+        if (search.Status == Victoria.Responses.Search.SearchStatus.LoadFailed)
         {
-            await RespondAsync(":exclamation: Bot disconnected from voice");
+            await ReplyAsync("Load failed. The url could be wrong or maybe LavaLink needs an update.");
             return;
         }
 
-        if (PlayerVoiceChannel != voiceState.VoiceChannel)
+        if (search.Status == Victoria.Responses.Search.SearchStatus.NoMatches)
         {
-            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}");
+            await ReplyAsync("Nothing found");
             return;
         }
 
-        // TODO: Play audio
+        var searchResult = search.Tracks.Take(5).ToArray();
+        var componentBuilder = new ComponentBuilder();
+        var embedBuilder = new EmbedBuilder()
+            .WithColor(new Color(255, 0, 0))
+            .WithTitle("Youtube search results:")
+            .WithThumbnailUrl(await searchResult.First().FetchArtworkAsync());
 
-        await RespondAsync("OK");
+        for (int i = 0; i < searchResult.Length; i++)
+        {
+            string displayNumber = (i + 1).ToString();
+            var currentItem = searchResult[i];
+
+            embedBuilder.AddField(currentItem.Author, currentItem.Title);
+            componentBuilder.WithButton(displayNumber, nameof(PlayModuleInteraction.PlayComponentResponseAsync) + currentItem.Url);
+        }
+
+        await RespondAsync(embed: embedBuilder.Build(), components: componentBuilder.Build());
     }
 }
