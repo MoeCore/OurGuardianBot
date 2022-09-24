@@ -32,8 +32,18 @@ public class PlayModuleInteraction : AudioModuleBase
 
         try
         {
-            await LavaNode.GetPlayer(Context.Guild).PlayAsync(audio);
-            await RespondAsync($":notes: Playing {audio.Title} by {audio.Author} in {voiceState.VoiceChannel.Name}");
+            var player = LavaNode.GetPlayer(Context.Guild);
+            if (player.PlayerState == Victoria.Enums.PlayerState.Playing || player.PlayerState == Victoria.Enums.PlayerState.Paused)
+            {
+                LavaNode.GetPlayer(Context.Guild).Queue.Enqueue(audio);
+                await RespondAsync($":notes: Adding {audio.Title} (by {audio.Author}) to queue");
+            }
+            else
+            {
+                await LavaNode.GetPlayer(Context.Guild).PlayAsync(audio);
+                await RespondAsync($":notes: Playing {audio.Title} (by {audio.Author}) in {voiceState.VoiceChannel.Name}");
+            }
+
         }
         catch (Exception exception)
         {
