@@ -1,4 +1,3 @@
-
 using Discord.Interactions;
 using Serilog;
 using Victoria;
