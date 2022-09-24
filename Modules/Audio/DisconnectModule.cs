@@ -29,7 +29,7 @@ public class DisconnectModule : AudioModuleBase
         try
         {
             await LavaNode.LeaveAsync(voiceState.VoiceChannel);
-            await RespondAsync($":notes: Disconnected from {voiceState.VoiceChannel.Name}");
+            await RespondAsync($":ok_hand: Disconnected from {voiceState.VoiceChannel.Name}");
         }
         catch (Exception exception)
         {
