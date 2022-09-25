@@ -28,8 +28,8 @@ internal class Program
 
         var lavaConfig = new LavaConfig
         {
-            // Hostname = "lavalink",
-            Port = _configuration.GetValue<ushort>("ports:lavalink"),
+            Hostname = "lavalink",
+            Port = 2333,
         };
 
         _services = new ServiceCollection()
