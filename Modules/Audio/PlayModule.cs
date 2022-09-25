@@ -16,13 +16,13 @@ public class PlayModule : AudioModuleBase
 
         if (search.Status == Victoria.Responses.Search.SearchStatus.LoadFailed)
         {
-            await ReplyAsync("Load failed. The url could be wrong or maybe LavaLink needs an update.");
+            await RespondAsync("Load failed. The url could be wrong or maybe LavaLink needs an update.");
             return;
         }
 
         if (search.Status == Victoria.Responses.Search.SearchStatus.NoMatches)
         {
-            await ReplyAsync("Nothing found");
+            await RespondAsync("Nothing found");
             return;
         }
 
