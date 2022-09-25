@@ -26,7 +26,6 @@ public class PlayModuleInteraction : AudioModuleBase
             return;
         }
 
-        // TODO: Implement queue
         // TODO: Remove original interaction message
         var audio = (await LavaNode.SearchYouTubeAsync(trackUrl)).Tracks.First();
 

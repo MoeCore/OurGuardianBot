@@ -3,9 +3,9 @@ using Victoria.EventArgs;
 
 namespace OurGuardian.Modules.Audio;
 
-public class PlayQueue
+public class PlayQueue : AudioModuleBase
 {
-    public PlayQueue(LavaNode lavaNode)
+    protected PlayQueue(LavaNode lavaNode) : base(lavaNode)
     {
         lavaNode.OnTrackEnded += OnTrackEnded;
     }
