@@ -4,8 +4,10 @@ services:
   lavalink:
     image: fredboat/lavalink:latest
     container_name: Lavalink
-    hostname: lavalink
     restart: unless-stopped
+    hostname: lavalink
+    ports:
+      - 2333:2333
     networks:
       - lavalink-net
     volumes:
@@ -15,10 +17,10 @@ services:
     build: .
     container_name: OurGuardianBot
     restart: unless-stopped
-    networks:
-      - lavalink-net
     depends_on:
       - lavalink
+    networks:
+      - lavalink-net
     volumes:
       - ./Logs:/app/Logs:rw
       - ./appsettings.json:/app/appsettings.json:ro
