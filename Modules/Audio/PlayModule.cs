@@ -22,7 +22,7 @@ public class PlayModule : AudioModuleBase
 
         if (search.Status == Victoria.Responses.Search.SearchStatus.NoMatches)
         {
-            await RespondAsync("Nothing found");
+            await RespondAsync("Nothing found.");
             return;
         }
 

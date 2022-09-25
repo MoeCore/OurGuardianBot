@@ -16,31 +16,31 @@ public class PlayModuleInteraction : AudioModuleBase
 
         if (!HasPlayer)
         {
-            await RespondAsync(":exclamation: Bot disconnected from voice");
+            await RespondAsync(":exclamation: Bot disconnected from voice.");
             return;
         }
 
         if (PlayerVoiceChannel != voiceState.VoiceChannel)
         {
-            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}");
+            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}.");
             return;
         }
 
         // TODO: Remove original interaction message
-        var audio = (await LavaNode.SearchYouTubeAsync(trackUrl)).Tracks.First();
+        var track = (await LavaNode.SearchYouTubeAsync(trackUrl)).Tracks.First();
 
         try
         {
             var player = LavaNode.GetPlayer(Context.Guild);
             if (player.PlayerState == Victoria.Enums.PlayerState.Playing || player.PlayerState == Victoria.Enums.PlayerState.Paused)
             {
-                LavaNode.GetPlayer(Context.Guild).Queue.Enqueue(audio);
-                await RespondAsync($":notes: Adding {audio.Title} (by {audio.Author}) to queue");
+                LavaNode.GetPlayer(Context.Guild).Queue.Enqueue(track);
+                await RespondAsync($":notes: Adding {track.Title} (by {track.Author}) to queue.");
             }
             else
             {
-                await LavaNode.GetPlayer(Context.Guild).PlayAsync(audio);
-                await RespondAsync($":notes: Playing {audio.Title} (by {audio.Author}) in {voiceState.VoiceChannel.Name}");
+                await LavaNode.GetPlayer(Context.Guild).PlayAsync(track);
+                await RespondAsync($":notes: Playing {track.Title} (by {track.Author}) in {voiceState.VoiceChannel.Name}.");
             }
 
         }

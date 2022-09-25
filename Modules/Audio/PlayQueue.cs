@@ -16,19 +16,23 @@ public class PlayQueue : AudioModuleBase
             return;
 
         var player = args.Player;
-        if (!player.Queue.TryDequeue(out var queueable))
+
+        if (player.Queue.Count == 0)
+            return;
+
+        if (player.Queue.TryDequeue(out var queueable) == false)
         {
-            await player.TextChannel.SendMessageAsync("Queue completed! Please add more tracks to rock n' roll!");
+            await player.TextChannel.SendMessageAsync(":exclamation: Something gone wrong.");
             return;
         }
 
         if (queueable is not LavaTrack track)
         {
-            await player.TextChannel.SendMessageAsync("Next item in queue is not a track.");
+            await player.TextChannel.SendMessageAsync(":exclamation: Next item in queue is not a track.");
             return;
         }
 
-        await args.Player.PlayAsync(track);
-        await args.Player.TextChannel.SendMessageAsync($"{args.Reason}: {args.Track.Title}\nNow playing: {track.Title}");
+        await player.PlayAsync(track);
+        await player.TextChannel.SendMessageAsync($":notes: Playing {track.Title} (by {track.Author}) in {player.VoiceChannel.Name}.");
     }
 }

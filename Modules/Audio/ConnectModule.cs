@@ -23,7 +23,7 @@ public class ConnectModule : AudioModuleBase
         try
         {
             await LavaNode.JoinAsync(voiceState.VoiceChannel);
-            await RespondAsync($":notes: Connected to {voiceState.VoiceChannel.Name}");
+            await RespondAsync($":notes: Connected to {voiceState.VoiceChannel.Name}.");
         }
         catch (Exception exception)
         {

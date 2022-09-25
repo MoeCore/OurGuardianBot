@@ -22,24 +22,24 @@ public class ResumeModule : AudioModuleBase
 
         if (PlayerVoiceChannel != voiceState.VoiceChannel)
         {
-            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}");
+            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}.");
             return;
         }
 
         if (LavaNode.GetPlayer(Context.Guild).Track == null)
         {
-            await RespondAsync($":exclamation: Resuming silence");
+            await RespondAsync($":exclamation: Resuming silence.");
             return;
         }
 
         try
         {
             await LavaNode.GetPlayer(Context.Guild).ResumeAsync();
-            await RespondAsync($":arrow_forward: Resume");
+            await RespondAsync($":arrow_forward: Resume.");
         }
         catch (Exception exception)
         {
-            await RespondAsync($":exclamation: Can't play audio");
+            await RespondAsync($":exclamation: Can't play audio.");
             Log.Error("[{Source}] {Message}", nameof(ResumeModule), exception.Message);
         }
     }

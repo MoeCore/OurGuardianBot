@@ -22,24 +22,24 @@ public class PauseModule : AudioModuleBase
 
         if (PlayerVoiceChannel != voiceState.VoiceChannel)
         {
-            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}");
+            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}.");
             return;
         }
 
         if (LavaNode.GetPlayer(Context.Guild).Track == null)
         {
-            await RespondAsync($":exclamation: Can't pause silence");
+            await RespondAsync($":exclamation: Can't pause silence.");
             return;
         }
 
         try
         {
             await LavaNode.GetPlayer(Context.Guild).PauseAsync();
-            await RespondAsync($":pause_button: Paused");
+            await RespondAsync($":pause_button: Pause.");
         }
         catch (Exception exception)
         {
-            await RespondAsync($":exclamation: Can't play audio");
+            await RespondAsync($":exclamation: Can't play audio.");
             Log.Error("[{Source}] {Message}", nameof(PauseModule), exception.Message);
         }
     }

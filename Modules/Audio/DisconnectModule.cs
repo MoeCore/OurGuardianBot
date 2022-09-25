@@ -22,14 +22,14 @@ public class DisconnectModule : AudioModuleBase
 
         if (PlayerVoiceChannel != voiceState.VoiceChannel)
         {
-            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}");
+            await RespondAsync($":exclamation: You need to connect to {PlayerVoiceChannel.Name}.");
             return;
         }
 
         try
         {
             await LavaNode.LeaveAsync(voiceState.VoiceChannel);
-            await RespondAsync($":ok_hand: Disconnected from {voiceState.VoiceChannel.Name}");
+            await RespondAsync($":ok_hand: Disconnected from {voiceState.VoiceChannel.Name}.");
         }
         catch (Exception exception)
         {

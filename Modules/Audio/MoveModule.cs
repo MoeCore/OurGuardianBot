@@ -23,14 +23,14 @@ public class MoveModule : AudioModuleBase
 
         if (PlayerVoiceChannel == voiceState.VoiceChannel)
         {
-            await RespondAsync($":exclamation: Bot already in {PlayerVoiceChannel.Name}");
+            await RespondAsync($":exclamation: Bot already in {PlayerVoiceChannel.Name}.");
             return;
         }
 
         try
         {
             await LavaNode.MoveChannelAsync(voiceState.VoiceChannel);
-            await RespondAsync($":notes: Moved to {voiceState.VoiceChannel.Name}");
+            await RespondAsync($":notes: Moved to {voiceState.VoiceChannel.Name}.");
         }
         catch (Exception exception)
         {
