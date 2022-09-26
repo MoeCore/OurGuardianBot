@@ -7,15 +7,4 @@ Discord bot written in C# using Discord.Net for [OUR Community](https://discord.
 ## Setup
 1. Copy `appsettings.example.json` as `appsettings.json`
 2. Setup your own discord bot token in `appsettings.json` file
-
----
-
-### Run in console
-```sh
-dotnet run
-```
-
-### Or in docker
-```sh
-sudo docker-compose up -d --build
-```
+3. Run `sudo docker-compose up -d --build`
