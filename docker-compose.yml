@@ -5,9 +5,6 @@ services:
     image: fredboat/lavalink:latest
     container_name: Lavalink
     restart: unless-stopped
-    hostname: lavalink
-    ports:
-      - 2333:2333
     networks:
       - lavalink-net
     volumes:
@@ -27,3 +24,4 @@ services:
 
 networks:
   lavalink-net:
+    driver: bridge

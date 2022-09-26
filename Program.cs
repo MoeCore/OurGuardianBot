@@ -28,7 +28,7 @@ internal class Program
 
         var lavaConfig = new LavaConfig
         {
-            Hostname = "localhost",
+            Hostname = "Lavalink",
             Authorization = "bruh",
             Port = 2333,
         };
