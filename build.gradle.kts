@@ -6,13 +6,15 @@ plugins {
 }
 
 group = "com.nullshii"
-version = "1.0-SNAPSHOT"
+version = "1"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation("net.dv8tion:JDA:5.0.0-beta.2")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.0")
     testImplementation(kotlin("test"))
 }
 
